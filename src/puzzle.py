@@ -6,12 +6,13 @@ class pos:
 		self.j = j
 		
 class puzzle:
-	def __init__(self, n, m):
+	def __init__(self, n, m, level):
 		self.n = n
 		self.m = m	
 		self.board = [[j*n+i+1 for i in range(0, n)] for j in range(0, m)]
 		self.board[m-1][n-1] = 0
 		self.blank = pos(m-1, n-1)
+		self.shuffle(level)
 		
 	def validDirs(self, lastMove):
 		dirs = []
@@ -27,12 +28,9 @@ class puzzle:
 		if lastMove != None:
 			dirs.remove(self.opositeDir(lastMove))
 		
-#		print(dirs)
-		
 		return dirs
 		
 	def move(self, dir):
-#		print(dir)
 		validMove = 0
 		if dir == 'L':
 			if self.blank.i-1 >= 0: 
@@ -54,7 +52,6 @@ class puzzle:
 				self.board[self.blank.j][self.blank.i], self.board[self.blank.j+1][self.blank.i] = self.board[self.blank.j+1][self.blank.i], self.board[self.blank.j][self.blank.i]
 				self.blank = pos(self.blank.i,self.blank.j+1);
 				validMove = 1
-#		self.printBoard()
 		return validMove
 
 	def opositeDir(self, dir):
@@ -74,12 +71,14 @@ class puzzle:
 			dirs = self.validDirs(dir)
 			dir = dirs[random.randint(0, len(dirs) - 1)]
 			moveCount += self.move(dir)
-#		print(moveCount)
 				
 	def printBoard(self):
 		for row in self.board:
 			for col in row:
-				print(col,'\t', end='')
+				if col == 0:
+					print(' ', '\t', end='')
+				else:
+					print(col,'\t', end='')
 			print('\n', end='')
 		print('\n', end='')
 
@@ -92,20 +91,23 @@ class puzzle:
 					ret = False
 		self.board[self.blank.j][self.blank.i] = 0
 		return ret
+		
+	def play(self):
+		self.printBoard()
+		dir = None
+		while dir != 'Q':
+			dir = input('direction? ').upper()
+			self.move(dir)
+			self.printBoard()
+			if self.checkBoard() == True:
+				print('SUCCESS')
+				break
+	
 
 def main():
-	p = puzzle(4, 4)
-	p.shuffle(10)
-	p.printBoard()
+	p = puzzle(4, 4, 3)
+	p.play()
 	
-	dir = None
-	while dir != 'Q':
-		dir = input('direction? ').upper()
-		p.move(dir)
-		p.printBoard()
-		if p.checkBoard() == True:
-			print('SUCCESS')
-			break
 		  
 if __name__== "__main__":
   main()
