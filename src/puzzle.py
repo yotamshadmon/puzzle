@@ -11,7 +11,7 @@ class puzzle:
 		self.m = m	
 		self.board = [[j*n+i+1 for i in range(0, n)] for j in range(0, m)]
 		self.board[m-1][n-1] = 0
-		self.blank = pos(m-1, n-1)
+		self.blank = pos(n-1, m-1)
 		self.shuffle(level)
 		
 	def validDirs(self, lastMove):
